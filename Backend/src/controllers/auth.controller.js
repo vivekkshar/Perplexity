@@ -1,4 +1,5 @@
 import userModel from "../models/user.model.js";
+import sendEmail from "../services/mail.services.js"
 import jwt from "jsonwebtoken"
 
 
@@ -26,6 +27,16 @@ export async function registercontroller(req,res){
             password
         });
 
+        await sendEmail({
+            to: email,
+            subject:"welcome to perplexity ",
+            html: `<h1>Welcome to Perplexity, ${username}!</h1>
+            <p>Thank you for registering with us. We're excited to have you on board!</p>
+            <p>Best regards,
+            <br/>
+            The Perplexity Team</p>`
+        })
+
         res.status(201).json({
             success: true,
             message: "User registered successfully",
@@ -36,6 +47,7 @@ export async function registercontroller(req,res){
                 verified: user.verified
             }
         });
+
     } 
     catch (error) {
         console.log(error);
