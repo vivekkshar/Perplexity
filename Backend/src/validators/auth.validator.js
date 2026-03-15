@@ -21,6 +21,20 @@ export const registerValidation = [
     .withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number')
 ];
 
+export const loginValidation = [
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email address')
+    .normalizeEmail(),
+  
+  body('password')
+    .notEmpty()
+    .withMessage('Password is required')
+    .isLength({ min: 1 })
+    .withMessage('Password cannot be empty')
+];
+
 export const validationErrorHandler = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
