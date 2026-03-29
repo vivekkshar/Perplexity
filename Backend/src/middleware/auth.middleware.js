@@ -2,20 +2,23 @@ import jwt from "jsonwebtoken"
 
 export async  function  authUser(req,res,next){
 
-    const token = req.cookie.token 
+    const token = req.cookies.authToken || req.headers.authorization?.split(" ")[1]
+    console.log(token)
 
     if(!token){
         return res.status(401).json({
-            message: "toekn not foud",
+            message: "token not found",
             success:false,
 
         })
     }
 
+    
+
     try {
         
-        const decoded = jwt.verify(token, processs.env.JWT_SECRET)
-
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        
         req.user = decoded
         next()
         

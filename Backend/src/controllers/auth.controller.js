@@ -38,19 +38,22 @@ export async function registercontroller(req,res){
             email:user.email
         } , process.env.JWT_SECRET)
 
-        await sendEmail({
-            to: email,
-            subject:"welcome to perplexity ",
-            html: `<h1>Welcome to Perplexity, ${username}!</h1>
-            <p>Thank you for registering with us. We're excited to have you on board!</p>
-            <p>Please verify your email address by clicking the link below:</p>
-            <a href="http://localhost:8000/api/auth/verify-email?token=${emailverificationtoken}">Verify Email</a>
-            <p>Best regards,
-            <br/>
-            The Perplexity Team</p>`
-        })
-
-
+        try {
+            await sendEmail({
+                to: email,
+                subject:"welcome to perplexity ",
+                html: `<h1>Welcome to Perplexity, ${username}!</h1>
+                <p>Thank you for registering with us. We're excited to have you on board!</p>
+                <p>Please verify your email address by clicking the link below:</p>
+                <a href="http://localhost:8000/api/auth/verify-email?token=${emailverificationtoken}">Verify Email</a>
+                <p>Best regards,
+                <br/>
+                The Perplexity Team</p>`
+            })
+        } catch (emailError) {
+            console.error("Failed to send verification email:", emailError);
+            // Continue anyway, user can request email resend later
+        }
 
         res.status(201).json({
             success: true,
@@ -116,8 +119,8 @@ export async function verifyemail(req, res){
 }
 
 export async function getmecontroller(req, res){
-    const userid = req.user.id 
-    
+    const userid = req.user.userId 
+    console.log(userid)
     const user =  await userModel.findById(userid)
 
     if(!user){
