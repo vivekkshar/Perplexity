@@ -94,10 +94,23 @@ export async function getchatscontroller(req, res){
 export async function getmessagescontroller(req, res){
     const user = req.user
     const { chatId } = req.params
+    
 
     const chat = await chatModel.findOne({
         _id: chatId,
-        user: req.user.id
+        user: req.user.userId
+    })
+
+    
+
+    if(!user){
+        return res.status(401).json({
+            message:"user not authenticated",
+            success:false   
+        })    
+    }
+    const messages = await messageModel.find({
+        chat: chatId
     })
 
     if(!chat){
@@ -107,22 +120,37 @@ export async function getmessagescontroller(req, res){
         })    
     }
 
-    if(!user){
-        return res.status(401).json({
-            message:"user not authenticated",
-            success:false   
-        })    
-    }
-    const messages = await messageModel.findById({
-        chat: chatId
-    })
-
     res.status(200).json({
         message:"message fetches succesfully ",
         messages
     })
 }
 
+export async function deletechatcontroller(req, res){
+    const { chatId } = req.params
+
+    const chat = await chatModel.findOneAndDelete({
+        _id: chatId,
+        user: req.user.userId
+    })
+    if(!chat){
+        return res.status(404).json({  
+            message:"chat not found",
+            success:false
+        })
+    }
+    const messages = await messageModel.deleteMany({
+        chat: chatId
+    })
+
+    res.status(200).json({
+        message:"chat deleted successfully",
+        success:true
+    })
+
+
+
+} 
 
 
 

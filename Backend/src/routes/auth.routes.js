@@ -9,7 +9,7 @@ const router = Router();
 
 router.post('/register', registerValidation, validationErrorHandler, registercontroller)
 router.get('/verify-email', verifyemail )
-router.get('getme', authUser, getmecontroller)
+router.get('/getme', authUser, getmecontroller)
 router.post('/login', loginValidation, validationErrorHandler, logincontroller)
 
 

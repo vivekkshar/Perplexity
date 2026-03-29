@@ -4,7 +4,7 @@ import nodemailer from "nodemailer"
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth:{
+    auth:{ 
         type:'OAuth2',
         user: process.env.GOOGLE_USER,
         clientId: process.env.GOOGLE_CLIENT_ID,
@@ -38,12 +38,13 @@ export async function sendEmail({to, subject, html, text}){
             text
         }
 
-        const details= await  transporter.sendMail(mailoption)
+        const details = await transporter.sendMail(mailoption)
         console.log("email sent " , details)
+        return details;
         
     } catch (error) {
         console.error('Error sending email:', error);
-        
+        throw error;
     }
 }    
 
